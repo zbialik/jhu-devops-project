@@ -10,5 +10,13 @@
 
 ```
 cd ansible
-ansible-playbook -i inventory.ini init-server.yml
+ansible-playbook -i inventory/jhu-devops.ini init-server.yml
 ```
+
+### Deploy Containers
+
+```
+cd ansible
+ansible-playbook -i inventory/jhu-devops.ini main.yml
+```
+

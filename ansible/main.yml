@@ -1,0 +1,6 @@
+---
+- name: Deploy GitLab and SonarQube using docker-compose
+  hosts: gitlab
+  become: yes
+  roles:
+    - gitlab-sonarqube

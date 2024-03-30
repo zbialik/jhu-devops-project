@@ -1,5 +1,5 @@
 - name: Install Docker on Ubuntu
-  hosts: jhu-devops
+  hosts: jhu_devops
   become: true
   tasks:
     - name: Update apt and install necessary packages
