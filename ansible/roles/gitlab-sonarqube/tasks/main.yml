@@ -1,4 +1,24 @@
 ---
+- name: Copy sysctl.conf to the target
+  ansible.builtin.copy:
+    src: sysctl.conf
+    dest: /etc/sysctl.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Run sysctl -w vm.max_map_count=262144
+  ansible.builtin.shell:
+    cmd: sysctl -w vm.max_map_count=262144
+  args:
+    executable: /bin/bash
+
+- name: Run systemctl restart docker
+  ansible.builtin.shell:
+    cmd: systemctl restart docker
+  args:
+    executable: /bin/bash
+
 - name: Copy docker-compose.yml to the target
   ansible.builtin.copy:
     src: docker-compose.yml
