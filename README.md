@@ -3,7 +3,7 @@
 ## Infrastructure Setup
 
 2 AWS EC2 instances:
-- `t3.medium` for Gitlab + Sonarqube
+- `r5.large` for Gitlab + Sonarqube
 - `TBD` for Jenkins + Snyk
 
 ### Update OS Packages on Hosts
