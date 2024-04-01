@@ -19,6 +19,8 @@ services:
     shm_size: '256m'
   sonarqube:
     image: sonarqube:community
+    container_name: sonarqube
+    restart: always
     depends_on:
       - db
     environment:
@@ -33,6 +35,8 @@ services:
       - "9000:9000"
   db:
     image: postgres:12
+    container_name: db
+    restart: always
     environment:
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar

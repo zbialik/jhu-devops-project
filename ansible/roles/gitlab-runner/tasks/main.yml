@@ -1,0 +1,21 @@
+---
+- name: Import GitLab's official GPG key
+  ansible.builtin.apt_key:
+    url: https://packages.gitlab.com/gpg.key
+    state: present
+
+- name: Add GitLab Runner repository
+  ansible.builtin.apt_repository:
+    repo: 'deb https://packages.gitlab.com/runner/gitlab-runner/ubuntu/ {{ ansible_distribution_release }} main'
+    state: present
+    update_cache: yes
+
+- name: Install GitLab Runner
+  ansible.builtin.apt:
+    name: gitlab-runner
+    state: latest
+    update_cache: yes
+
+- name: Register GitLab Runner
+  ansible.builtin.shell:
+    cmd: gitlab-runner register --non-interactive --url http://gitlab:8929 --registration-token {{ gitlab_runner_registration_token }}

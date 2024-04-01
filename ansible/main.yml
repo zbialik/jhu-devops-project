@@ -1,6 +1,22 @@
 ---
-- name: Deploy GitLab and SonarQube using docker-compose
+- name: Ensure secret vars are defined
+  hosts: all
+  tasks:
+    - name: Check if gitlab_runner_registration_token is defined
+      assert:
+        that:
+          - gitlab_runner_registration_token is defined
+        fail_msg: "'gitlab_runner_registration_token' is not defined but is required."
+        success_msg: "'gitlab_runner_registration_token' is defined."
+
+- name: Deploy GitLab and SonarQube
   hosts: gitlab
   become: yes
   roles:
     - gitlab-sonarqube
+
+- name: Deploy GitLab Runner
+  hosts: gitlab_runner
+  become: yes
+  roles:
+    - gitlab-runner
