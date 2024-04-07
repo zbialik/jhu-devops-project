@@ -1,4 +1,20 @@
 ---
+- name: Get the public IP address
+  ansible.builtin.shell: |
+    TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4
+  register: public_ip_output
+  changed_when: false
+
+- name: Generate /etc/hosts using public IP output
+  ansible.builtin.template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+  vars:
+    public_ip: "{{ public_ip_output.stdout }}"
+
 - name: Copy sysctl.conf to the target
   ansible.builtin.copy:
     src: sysctl.conf
@@ -13,7 +29,6 @@
     cmd: sysctl -w vm.max_map_count=262144
   args:
     executable: /bin/bash
-  when: sysctl_conf.changed
 
 - name: Run systemctl restart docker
   ansible.builtin.shell:

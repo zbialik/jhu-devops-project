@@ -1,4 +1,11 @@
 ---
+- name: Check if gitlab_runner_registration_token is defined
+  assert:
+    that:
+      - gitlab_runner_registration_token is defined
+    fail_msg: "'gitlab_runner_registration_token' is not defined but is required."
+    success_msg: "'gitlab_runner_registration_token' is defined."
+
 - name: Import GitLab's official GPG key
   ansible.builtin.apt_key:
     url: https://packages.gitlab.com/gpg.key
@@ -18,4 +25,6 @@
 
 - name: Register GitLab Runner
   ansible.builtin.shell:
-    cmd: gitlab-runner register --non-interactive --url http://gitlab:8929 --registration-token {{ gitlab_runner_registration_token }}
+    cmd: gitlab-runner register --non-interactive --url http://gitlab:8929 --executor docker --docker-image alpine:latest --registration-token {{ gitlab_runner_registration_token }} --run-untagged="true" --locked="false" --access-level="not_protected"
+  args:
+    executable: /bin/bash
