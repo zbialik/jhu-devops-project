@@ -45,17 +45,17 @@
     group: root
     mode: '0644'
 
-- name: Init sonarqube docker volume
-  ansible.builtin.shell:
-    cmd: docker volume create local_sonarqube_extensions
-  args:
-    executable: /bin/bash
+# - name: Init sonarqube docker volume
+#   ansible.builtin.shell:
+#     cmd: docker volume create local_sonarqube_extensions
+#   args:
+#     executable: /bin/bash
 
-- name: Download gitlab-sonarqube-plugin to extensions volume
-  ansible.builtin.shell:
-    cmd: docker run --rm -v local_sonarqube_extensions:/extensions busybox sh -c 'chmod 0770 /extensions && mkdir -p /extensions/plugins && chmod 0770 /extensions && wget https://github.com/gabrie-allaigre/sonar-gitlab-plugin/releases/download/4.1.0-SNAPSHOT/sonar-gitlab-plugin-4.1.0-SNAPSHOT.jar -O /extensions/plugins/sonar-gitlab-plugin-4.1.0-SNAPSHOT.jar'
-  args:
-    executable: /bin/bash
+# - name: Download gitlab-sonarqube-plugin to extensions volume
+#   ansible.builtin.shell:
+#     cmd: docker run --rm -v local_sonarqube_extensions:/extensions busybox sh -c 'chmod 0770 /extensions && mkdir -p /extensions/plugins && chmod 0770 /extensions && wget https://github.com/gabrie-allaigre/sonar-gitlab-plugin/releases/download/4.1.0-SNAPSHOT/sonar-gitlab-plugin-4.1.0-SNAPSHOT.jar -O /extensions/plugins/sonar-gitlab-plugin-4.1.0-SNAPSHOT.jar'
+#   args:
+#     executable: /bin/bash
 
 - name: Run docker-compose up
   ansible.builtin.shell:
