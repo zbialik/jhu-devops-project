@@ -9,13 +9,13 @@ shutdown_timeout = 0
 [[runners]]
   name = "jhu-devops"
   url = "http://gitlab:8929"
-  clone_url = "http://{{ public_ip }}:8929"
   id = 1
   executor = "docker"
   [runners.cache]
     MaxUploadedArchiveSize = 0
   [runners.docker]
     tls_verify = false
+    extra_hosts = ["gitlab:{{ public_ip }}","sonarqube:{{ public_ip }}"]
     image = "alpine:latest"
     privileged = false
     disable_entrypoint_overwrite = false

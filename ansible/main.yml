@@ -1,12 +1,12 @@
 ---
-- name: Deploy GitLab and SonarQube
-  hosts: gitlab
-  become: yes
-  roles:
-    - gitlab-sonarqube
-
-# - name: Deploy GitLab Runner
-#   hosts: gitlab_runner
+# - name: Deploy GitLab and SonarQube
+#   hosts: gitlab
 #   become: yes
 #   roles:
-#     - gitlab-runner
+#     - gitlab-sonarqube
+
+- name: Deploy GitLab Runner
+  hosts: gitlab_runner
+  become: yes
+  roles:
+    - gitlab-runner
