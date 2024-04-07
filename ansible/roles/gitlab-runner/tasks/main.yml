@@ -23,8 +23,30 @@
     state: latest
     update_cache: yes
 
+- name: Ensure a directory exists
+  ansible.builtin.file:
+    path: /var/local/gitlab-runner
+    state: directory
+    mode: '0755'
+
+- name: Get the public IP address
+  ansible.builtin.shell: |
+    TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4
+  register: public_ip_output
+  changed_when: false
+
+- name: Generate gitlab-runner config.toml
+  ansible.builtin.template:
+    src: config.template.toml.j2
+    dest: /var/local/gitlab-runner/config.template.toml
+    owner: root
+    group: root
+    mode: '0644'
+  vars:
+    public_ip: "{{ public_ip_output.stdout }}"
+
 - name: Register GitLab Runner
   ansible.builtin.shell:
-    cmd: gitlab-runner register --non-interactive --url http://gitlab:8929 --executor docker --docker-image alpine:latest --registration-token {{ gitlab_runner_registration_token }} --run-untagged="true" --locked="false" --access-level="not_protected"
+    cmd: gitlab-runner register --non-interactive --template-config /var/local/gitlab-runner/config.template.toml --registration-token {{ gitlab_runner_registration_token }}
   args:
     executable: /bin/bash
