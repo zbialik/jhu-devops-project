@@ -1,0 +1,16 @@
+---
+
+- name: Copy docker-compose.yml to the target
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /var/local/docker-compose-jenkins.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Run docker-compose up
+  ansible.builtin.shell:
+    cmd: docker compose -f /var/local/docker-compose-jenkins.yml up -d
+    chdir: /var/local/
+  args:
+    executable: /bin/bash

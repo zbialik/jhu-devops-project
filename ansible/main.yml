@@ -18,3 +18,11 @@
     - gitlab-runner
   tags:
     - gitlab-runner
+
+- name: Deploy Jenkins
+  hosts: all
+  become: yes
+  roles:
+    - jenkins
+  tags:
+    - jenkins
