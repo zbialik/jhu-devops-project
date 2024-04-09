@@ -45,8 +45,20 @@
   vars:
     public_ip: "{{ public_ip_output.stdout }}"
 
+- name: Unregister any gitlab runners
+  ansible.builtin.shell:
+    cmd: gitlab-runner unregister --all-runners
+  args:
+    executable: /bin/bash
+
 - name: Register GitLab Runner
   ansible.builtin.shell:
     cmd: gitlab-runner register --non-interactive --template-config /var/local/gitlab-runner/config.template.toml --registration-token {{ gitlab_runner_registration_token }}
+  args:
+    executable: /bin/bash
+
+- name: Restart GitLab Runner
+  ansible.builtin.shell:
+    cmd: gitlab-runner restart
   args:
     executable: /bin/bash

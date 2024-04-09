@@ -1,6 +1,0 @@
----
-- name: Deploy GitLab and SonarQube
-  hosts: gitlab
-  become: yes
-  roles:
-    - gitlab-sonarqube
