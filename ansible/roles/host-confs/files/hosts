@@ -11,3 +11,5 @@ ff02::3 ip6-allhosts
 # Public IP for this host
 127.0.0.1 gitlab
 127.0.0.1 sonarqube
+127.0.0.1 jenkins
+127.0.0.1 snyk
