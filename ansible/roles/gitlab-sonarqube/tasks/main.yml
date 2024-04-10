@@ -9,11 +9,12 @@
     mode: '0644'
   register: sysctl_conf
 
-- name: Run sysctl -w vm.max_map_count=262144
+- name: Reload systctl.conf
   ansible.builtin.shell:
-    cmd: sysctl -w vm.max_map_count=262144
+    cmd: sudo sysctl -p
   args:
     executable: /bin/bash
+  when: sysctl_conf.changed
 
 - name: Run systemctl restart docker
   ansible.builtin.shell:
