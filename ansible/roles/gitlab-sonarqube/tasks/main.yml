@@ -31,17 +31,50 @@
     group: root
     mode: '0644'
 
-# - name: Init sonarqube docker volume
-#   ansible.builtin.shell:
-#     cmd: docker volume create local_sonarqube_extensions
-#   args:
-#     executable: /bin/bash
+- name: Ensure gitlab config directory exists
+  ansible.builtin.file:
+    path: /var/local/gitlab/config
+    state: directory
+    owner: root
+    group: root
+    mode: '0775'
 
-# - name: Download gitlab-sonarqube-plugin to extensions volume
-#   ansible.builtin.shell:
-#     cmd: docker run --rm -v local_sonarqube_extensions:/extensions busybox sh -c 'chmod 0770 /extensions && mkdir -p /extensions/plugins && chmod 0770 /extensions && wget https://github.com/gabrie-allaigre/sonar-gitlab-plugin/releases/download/4.1.0-SNAPSHOT/sonar-gitlab-plugin-4.1.0-SNAPSHOT.jar -O /extensions/plugins/sonar-gitlab-plugin-4.1.0-SNAPSHOT.jar'
-#   args:
-#     executable: /bin/bash
+- name: Copy gitlab.rb to the target
+  ansible.builtin.copy:
+    src: gitlab.rb
+    dest: /var/local/gitlab/config/gitlab.rb
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Ensure SSL directory exists for gitlab
+  ansible.builtin.file:
+    path: /var/local/gitlab/config/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Generate RSA private key for gitlab registry
+  community.crypto.openssl_privatekey:
+    path: /var/local/gitlab/config/ssl/gitlab.key
+    size: 2048
+
+- name: Create certificate signing request (CSR) for self-signed Gitlab certificate
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: /var/local/gitlab/config/ssl/gitlab.key
+    common_name: gitlab
+    organization_name: JHU Devops, Inc.
+    subject_alt_name:
+      - "DNS:gitlab-registry"
+  register: csr
+
+- name: Generate self-signed certificate for gitlab registry
+  community.crypto.x509_certificate:
+    path: /var/local/gitlab/config/ssl/gitlab.crt
+    privatekey_path: /var/local/gitlab/config/ssl/gitlab.key
+    csr_content: "{{ csr.csr }}"
+    provider: selfsigned
 
 - name: Run docker-compose up
   ansible.builtin.shell:
