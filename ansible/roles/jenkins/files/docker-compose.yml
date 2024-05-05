@@ -2,6 +2,8 @@ services:
   jenkins:
     image: jenkins/jenkins:lts
     container_name: jenkins
+    privileged: true
+    user: 0:0
     ports:
       - "8080:8080"
     environment: # used to add custom binaries like snyk cli
@@ -9,6 +11,8 @@ services:
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/local/jenkins/bin:/var/local/bin
+      - /usr/bin/docker:/var/local/bin/docker
+      - /var/run/docker.sock:/var/run/docker.sock
   # ssh-agent:
   #   container_name: jenkins-ssh-agent
   #   image: jenkins/ssh-agent
