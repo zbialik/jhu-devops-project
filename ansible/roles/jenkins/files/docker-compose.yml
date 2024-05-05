@@ -4,8 +4,11 @@ services:
     container_name: jenkins
     ports:
       - "8080:8080"
+    environment: # used to add custom binaries like snyk cli
+      PATH: /var/local/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     volumes:
       - jenkins_home:/var/jenkins_home
+      - /var/local/jenkins/bin:/var/local/bin
   # ssh-agent:
   #   container_name: jenkins-ssh-agent
   #   image: jenkins/ssh-agent

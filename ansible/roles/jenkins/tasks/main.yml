@@ -1,5 +1,21 @@
 ---
 
+- name: Ensure Jenkins bin directory exists
+  ansible.builtin.file:
+    path: /var/local/jenkins/bin
+    state: directory
+    owner: root
+    group: root
+    mode: '0775'
+
+- name: Download Snyk CLI
+  get_url:
+    url: "https://static.snyk.io/cli/latest/snyk-linux"
+    dest: "/var/local/jenkins/bin/snyk"
+    mode: '0777'
+    owner: root
+    group: root
+
 - name: Copy docker-compose.yml to the target
   ansible.builtin.copy:
     src: docker-compose.yml
